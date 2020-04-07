@@ -9,9 +9,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.HashMap;
+
 
 
 /**
@@ -21,13 +22,13 @@ public class BookDetailsFragment extends Fragment {
 
     private static final String BOOK_KEY = "book";
     private static final String BOOK_KEY2 = "book2";
-    private HashMap<String, String> book;
+    private Book book;
 
     TextView titleTextView, authorTextView;
 
     public BookDetailsFragment() {}
 
-    public static BookDetailsFragment newInstance(HashMap<String, String> book) {
+    public static BookDetailsFragment newInstance(Book book) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(BOOK_KEY, book);
@@ -39,10 +40,10 @@ public class BookDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if(savedInstanceState ==null){
             if (getArguments() != null) {
-                book = (HashMap) getArguments().getSerializable(BOOK_KEY);
+                book = (Book) getArguments().getSerializable(BOOK_KEY);
             }
         }else{
-            book =  (HashMap) savedInstanceState.getSerializable(BOOK_KEY2);
+            book =  (Book) savedInstanceState.getSerializable(BOOK_KEY2);
         }
 
     }
@@ -57,9 +58,9 @@ public class BookDetailsFragment extends Fragment {
             displayBook(book);
         return v;
     }
-    public void displayBook(HashMap<String, String> book) {
-        titleTextView.setText(book.get("title"));
-        authorTextView.setText(book.get("author"));
+    public void displayBook(Book book) {
+        titleTextView.setText(book.getTitle());
+        authorTextView.setText(book.getAuthor());
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {

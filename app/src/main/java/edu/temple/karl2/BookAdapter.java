@@ -12,12 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 public class BookAdapter extends ArrayAdapter implements Filterable {
     Context context;
-    ArrayList<HashMap<String, String>> books;       //Original data
-    ArrayList<HashMap<String, String>> data;           //Data to be filtered
+    ArrayList<Book> books;       //Original data
+    ArrayList<Book> data;           //Data to be filtered
     BookFilter myFilter;
 
 
@@ -60,15 +60,14 @@ public class BookAdapter extends ArrayAdapter implements Filterable {
         titleTextView = convertView.findViewById(R.id.titleTextView);
         authorTextView = convertView.findViewById(R.id.authorTextView);
 
-        titleTextView.setText(((HashMap<String, String>) getItem(position)).get("title"));
-        authorTextView.setText(((HashMap<String, String>) getItem(position)).get("author"));
-
+        titleTextView.setText(books.get(position).title);
+        authorTextView.setText(books.get(position).author);
         return convertView;
     }
 
     private class BookFilter extends Filter {
-        ArrayList<HashMap<String, String>> allBooks;
-        public BookFilter(ArrayList<HashMap<String, String>> b) {
+        ArrayList<Book> allBooks;
+        public BookFilter(ArrayList<Book> b) {
             this.allBooks=b;
         }
 
@@ -77,15 +76,15 @@ public class BookAdapter extends ArrayAdapter implements Filterable {
 
             String stringToFilter = constraint.toString().toLowerCase();
 
-            final ArrayList<HashMap<String, String>>  lookUpList = this.allBooks;
+            final ArrayList<Book>  lookUpList = this.allBooks;
 
             int count = lookUpList.size();
-            final ArrayList<HashMap<String, String>> newList = new ArrayList<HashMap<String, String>>(count);
+            final ArrayList<Book> newList = new ArrayList<Book>(count);
 
             String filterableString ;
             //Filter here
             for (int i = 0; i < count; i++) {
-                filterableString = lookUpList.get(i).get("title");
+                filterableString = lookUpList.get(i).getTitle();
                 if (filterableString.toLowerCase().contains(stringToFilter)) {
                     newList.add(lookUpList.get(i));
                 }
@@ -99,7 +98,7 @@ public class BookAdapter extends ArrayAdapter implements Filterable {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            data=(ArrayList<HashMap<String, String>> )results.values;       //Keep data filtered, updated
+            data=(ArrayList<Book> )results.values;       //Keep data filtered, updated
             notifyDataSetChanged();
         }
 

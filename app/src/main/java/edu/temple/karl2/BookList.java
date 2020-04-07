@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 
 /**
@@ -27,14 +27,14 @@ public class BookList extends Fragment {
 
     private static final String BOOK_LIST_KEY = "booklist";
     private static final String Search_Key = "search";
-    private ArrayList<HashMap<String, String>> books;
+    private ArrayList<Book> books;
     private CharSequence mySearch;
     BookSelectedInterface parentActivity;
     BookAdapter myAdapter;
 
     public BookList() {}
 
-    public static BookList newInstance(ArrayList<HashMap<String, String>> books, CharSequence search2) {
+    public static BookList newInstance(ArrayList<Book> books, CharSequence search2) {
         BookList fragment = new BookList();
         Bundle args = new Bundle();
         args.putCharSequence(Search_Key,search2);
@@ -65,25 +65,28 @@ public class BookList extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        //Inflates fragment book list to root element
+
         View root =  inflater.inflate(R.layout.fragment_book_list, container, false);
-        //Get list view
+
         final ListView listView =(ListView)root.findViewById(R.id.listView);
         myAdapter= new BookAdapter(getContext(), 0, books);        //Create new adapter
         listView.setAdapter(myAdapter);
 
-        //Sets event on click
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.bookSelected(position);
             }
         });
-        myAdapter.getFilter().filter(mySearch);
 
+        myAdapter.getFilter().filter(mySearch);
         return root;
     }
 
+    public void displayBookList(){
+
+    }
 
     interface BookSelectedInterface {
         void bookSelected(int index);

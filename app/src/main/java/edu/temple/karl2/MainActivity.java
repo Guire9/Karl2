@@ -10,9 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 public class MainActivity extends AppCompatActivity implements BookList.BookSelectedInterface {
 
@@ -27,8 +28,6 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         final EditText search=(EditText)findViewById(R.id.search);
         Button button = (Button)findViewById(R.id.button);
@@ -50,22 +49,11 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
         //Set fragments for both layout modes
         // Fragments in Portrait mode
         if (findViewById(R.id.layout_portrait)!=null){
-
             //Transaction sets fragment list to entire book list
             fm.beginTransaction()
                     .replace(R.id.fragment_list,bookList )
                     .commit();
-
-            twoPane = findViewById(R.id.fragment_details) != null;
-            if (twoPane) {
-                bookDetailsFragment = new BookDetailsFragment();
-                //     BookDetailsFragment.SavedState();
-                fm.beginTransaction()
-                        .replace(R.id.fragment_details, bookDetailsFragment)
-                        .commit();
-            }
         }
-
         // Fragments in landscape mode
         else if(findViewById(R.id.layout_landscape)!=null){
             //Transaction sets fragment list to entire book list
@@ -82,14 +70,15 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
         }
     }
 
-    private ArrayList<HashMap<String, String>> getTestBooks() {
-        ArrayList<HashMap<String, String>> books = new ArrayList<HashMap<String, String>>();
-
-        HashMap<String, String> book = new HashMap<String, String>();
-        for (int i = 0; i < 10; i++) {
-            book = new HashMap<String, String>();
-            book.put("title", "Book" + i);
-            book.put("author", "Author" + i);
+    private ArrayList<Book> getTestBooks() {
+        ArrayList<Book> books = new ArrayList<Book>();
+        Book book;
+        for (int i = 0; i < 5; i++) {
+            book = new Book("Author"+i,"title"+i);
+            books.add(book);
+        }
+        for (int i = 10; i < 15; i++) {
+            book = new Book("Author"+i,"title"+i);
             books.add(book);
         }
         return books;
@@ -98,15 +87,15 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
     public void bookSelected(int index) {
         detailsIndex=index;
         if (findViewById(R.id.layout_portrait)==null){
-            //bookDetailsFragment.displayBook(getTestBooks().get(index));
+         //bookDetailsFragment.displayBook(getTestBooks().get(index));
             fm.beginTransaction()
-                    .replace(R.id.fragment_details,BookDetailsFragment.newInstance(getTestBooks().get(index)))
+                    .replace(R.id.fragment_details,BookDetailsFragment.newInstance(getTestBooks().get(detailsIndex)))
                     .addToBackStack(null)
                     .commit();
         }
         else if(findViewById(R.id.layout_portrait)!=null){
             fm.beginTransaction()
-                    .replace(R.id.fragment_list, BookDetailsFragment.newInstance(getTestBooks().get(index)))
+                    .replace(R.id.fragment_list, BookDetailsFragment.newInstance(getTestBooks().get(detailsIndex)))
                     .addToBackStack(null)
                     .commit();
         }
