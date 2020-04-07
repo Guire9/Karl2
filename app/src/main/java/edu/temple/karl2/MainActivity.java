@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements BookList.BookSelectedInterface {
 
     FragmentManager fm;
-
+    CharSequence s = "";
     boolean twoPane;
     BookDetailsFragment bookDetailsFragment;
     BookList bookList;
@@ -26,9 +28,23 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    //    EditText search=(EditText)findViewById(R.id.search);
-        bookList=BookList.newInstance(getTestBooks());
 
+
+        final EditText search=(EditText)findViewById(R.id.search);
+        Button button = (Button)findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editButton(search);
+                fm.beginTransaction()
+                        .replace(R.id.fragment_list, BookList.newInstance(getTestBooks(),editButton(search)))
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        bookList=BookList.newInstance(getTestBooks(),s);
         fm = getSupportFragmentManager();   //Get support manager (Good)
 
         //Set fragments for both layout modes
@@ -49,11 +65,12 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
                         .commit();
             }
         }
+
         // Fragments in landscape mode
         else if(findViewById(R.id.layout_landscape)!=null){
             //Transaction sets fragment list to entire book list
             fm.beginTransaction()
-                    .replace(R.id.fragment_list, BookList.newInstance(getTestBooks()))
+                    .replace(R.id.fragment_list, BookList.newInstance(getTestBooks(),s))
                     .addToBackStack(null)
                     .commit();
             //Transaction to set fragment list to current fragment at selected index
@@ -67,7 +84,8 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
 
     private ArrayList<HashMap<String, String>> getTestBooks() {
         ArrayList<HashMap<String, String>> books = new ArrayList<HashMap<String, String>>();
-        HashMap<String, String> book;
+
+        HashMap<String, String> book = new HashMap<String, String>();
         for (int i = 0; i < 10; i++) {
             book = new HashMap<String, String>();
             book.put("title", "Book" + i);
@@ -75,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
             books.add(book);
         }
         return books;
-    };
+    }
     @Override
     public void bookSelected(int index) {
         detailsIndex=index;
@@ -92,6 +110,11 @@ public class MainActivity extends AppCompatActivity implements BookList.BookSele
                     .addToBackStack(null)
                     .commit();
         }
+    }
+    @Override
+    public CharSequence editButton(EditText editText){
+        CharSequence searchChar =  editText.getText();;
+        return searchChar;
     }
 
 }

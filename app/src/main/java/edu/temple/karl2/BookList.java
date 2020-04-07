@@ -28,15 +28,16 @@ public class BookList extends Fragment {
     private static final String BOOK_LIST_KEY = "booklist";
     private static final String Search_Key = "search";
     private ArrayList<HashMap<String, String>> books;
-    private EditText mySearch;
+    private CharSequence mySearch;
     BookSelectedInterface parentActivity;
     BookAdapter myAdapter;
 
     public BookList() {}
 
-    public static BookList newInstance(ArrayList<HashMap<String, String>> books) {
+    public static BookList newInstance(ArrayList<HashMap<String, String>> books, CharSequence search2) {
         BookList fragment = new BookList();
         Bundle args = new Bundle();
+        args.putCharSequence(Search_Key,search2);
         args.putSerializable(BOOK_LIST_KEY, books);
         fragment.setArguments(args);
         return fragment;
@@ -56,11 +57,14 @@ public class BookList extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             books = (ArrayList) getArguments().getSerializable(BOOK_LIST_KEY);
+            mySearch = getArguments().getCharSequence(Search_Key);
         }
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         //Inflates fragment book list to root element
         View root =  inflater.inflate(R.layout.fragment_book_list, container, false);
         //Get list view
@@ -75,29 +79,15 @@ public class BookList extends Fragment {
                 parentActivity.bookSelected(position);
             }
         });
-
-        EditText search=(EditText)root.findViewById(R.id.search);
-        Button   button = (Button)root.findViewById(R.id.button);
-        final CharSequence searchE = search.getText();
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myAdapter.getFilter().filter(searchE);
-            }
-        });
-        
-
+        myAdapter.getFilter().filter(mySearch);
 
         return root;
     }
 
 
-    /*
-    Interface for communicating with attached activity
-     */
     interface BookSelectedInterface {
         void bookSelected(int index);
+        CharSequence editButton(EditText editText);
 
     }
 }

@@ -11,13 +11,19 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/name"
+        android:id="@+id/search"
         android:autofillHints="A book" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
 
     <FrameLayout
         android:id="@+id/fragment_list"
         android:layout_width="377dp"
-        android:layout_height="670dp"
+        android:layout_height="615dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
