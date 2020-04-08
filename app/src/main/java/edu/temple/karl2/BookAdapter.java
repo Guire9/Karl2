@@ -16,24 +16,17 @@ import java.util.ArrayList;
 
 public class BookAdapter extends ArrayAdapter implements Filterable {
     Context context;
-    ArrayList<Book> books;       //Original data
-    ArrayList<Book> data;           //Data to be filtered
+    ArrayList<Book> books;
+    ArrayList<Book> data;
     BookFilter myFilter;
-
 
     public BookAdapter( Context context, int resource,ArrayList books) {
         super(context, resource);
         this.context = context;
         this.books = books;
         this.data=books;
-        myFilter=new BookFilter(books);     //Set filter
+        myFilter=new BookFilter(books);
     }
-
-    @Override
-    public Filter getFilter() {
-        return myFilter;
-    }
-
     @Override
     public int getCount() {
         return data.size();
@@ -64,6 +57,10 @@ public class BookAdapter extends ArrayAdapter implements Filterable {
         authorTextView.setText(books.get(position).author);
         return convertView;
     }
+    @Override
+    public Filter getFilter() {
+        return myFilter;
+    }
 
     private class BookFilter extends Filter {
         ArrayList<Book> allBooks;
@@ -74,23 +71,25 @@ public class BookAdapter extends ArrayAdapter implements Filterable {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
 
+            FilterResults results = new FilterResults();
             String stringToFilter = constraint.toString().toLowerCase();
-
             final ArrayList<Book>  lookUpList = this.allBooks;
-
             int count = lookUpList.size();
             final ArrayList<Book> newList = new ArrayList<Book>(count);
 
             String filterableString ;
-            //Filter here
             for (int i = 0; i < count; i++) {
                 filterableString = lookUpList.get(i).getTitle();
                 if (filterableString.toLowerCase().contains(stringToFilter)) {
                     newList.add(lookUpList.get(i));
                 }
             }
-            //Set results
-            FilterResults results = new FilterResults();        //To return
+            for (int i = 0; i < count; i++) {
+                filterableString = lookUpList.get(i).getAuthor();
+                if (filterableString.toLowerCase().contains(stringToFilter)) {
+                    newList.add(lookUpList.get(i));
+                }
+            }
             results.values = newList;
             results.count = newList.size();
             return results;
@@ -98,7 +97,7 @@ public class BookAdapter extends ArrayAdapter implements Filterable {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            data=(ArrayList<Book> )results.values;       //Keep data filtered, updated
+            data=(ArrayList<Book> )results.values;
             notifyDataSetChanged();
         }
 

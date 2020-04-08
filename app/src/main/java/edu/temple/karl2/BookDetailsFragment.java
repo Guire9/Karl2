@@ -12,9 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-
-
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -24,7 +21,7 @@ public class BookDetailsFragment extends Fragment {
     private static final String BOOK_KEY2 = "book2";
     private Book book;
 
-    TextView titleTextView, authorTextView;
+    TextView titleTextView, authorTextView, imageTextView;
 
     public BookDetailsFragment() {}
 
@@ -54,6 +51,7 @@ public class BookDetailsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_book_details, container, false);
         titleTextView = v.findViewById(R.id.titleTextView);
         authorTextView = v.findViewById(R.id.authorTextView);
+        imageTextView = v.findViewById(R.id.imageTextView);
         if (book != null)
             displayBook(book);
         return v;
@@ -61,6 +59,8 @@ public class BookDetailsFragment extends Fragment {
     public void displayBook(Book book) {
         titleTextView.setText(book.getTitle());
         authorTextView.setText(book.getAuthor());
+        imageTextView.setText(book.getCoverURL());
+
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {

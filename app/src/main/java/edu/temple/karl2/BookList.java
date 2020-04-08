@@ -18,26 +18,23 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class BookList extends Fragment {
 
     private static final String BOOK_LIST_KEY = "booklist";
-    private static final String Search_Key = "search";
+    private static final String BOOK_List_KEY2 = "book2";
+    private static final String SEARCH_KEY = "search";
+    private static final String Search_KEY2 = "S2";
     private ArrayList<Book> books;
-    private CharSequence mySearch;
+    private CharSequence mySearch="";
     BookSelectedInterface parentActivity;
     BookAdapter myAdapter;
 
     public BookList() {}
 
-    public static BookList newInstance(ArrayList<Book> books, CharSequence search2) {
+    public static BookList newInstance(ArrayList<Book> books, CharSequence charS) {
         BookList fragment = new BookList();
         Bundle args = new Bundle();
-        args.putCharSequence(Search_Key,search2);
+        args.putCharSequence(SEARCH_KEY,charS);
         args.putSerializable(BOOK_LIST_KEY, books);
         fragment.setArguments(args);
         return fragment;
@@ -45,7 +42,6 @@ public class BookList extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
         if (context instanceof BookSelectedInterface) {
             parentActivity = (BookSelectedInterface) context;
         } else {
@@ -55,42 +51,44 @@ public class BookList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            books = (ArrayList) getArguments().getSerializable(BOOK_LIST_KEY);
-            mySearch = getArguments().getCharSequence(Search_Key);
+        if (savedInstanceState == null) {
+            if (getArguments() != null) {
+                books = (ArrayList) getArguments().getSerializable(BOOK_LIST_KEY);
+                mySearch = getArguments().getCharSequence(SEARCH_KEY);
+           }
+        }else{
+            books= (ArrayList) savedInstanceState.getSerializable(BOOK_List_KEY2);
+            mySearch = savedInstanceState.getCharSequence(Search_KEY2);
         }
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-
         View root =  inflater.inflate(R.layout.fragment_book_list, container, false);
-
         final ListView listView =(ListView)root.findViewById(R.id.listView);
-        myAdapter= new BookAdapter(getContext(), 0, books);        //Create new adapter
+        myAdapter= new BookAdapter(getContext(), 0, books);
         listView.setAdapter(myAdapter);
-
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.bookSelected(position);
             }
         });
-
-        myAdapter.getFilter().filter(mySearch);
+        displayBookList(mySearch);
         return root;
     }
-
-    public void displayBookList(){
-
+    public void displayBookList(CharSequence displaySearch){
+        myAdapter.getFilter().filter(displaySearch);
     }
-
     interface BookSelectedInterface {
         void bookSelected(int index);
         CharSequence editButton(EditText editText);
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putCharSequence(Search_KEY2,mySearch);
+        outState.putSerializable(BOOK_List_KEY2,books);
     }
 }
